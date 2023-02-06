@@ -1,22 +1,22 @@
-//1
+//1.1 
 const sumDue =( (var1, var2)=>{
   return var1 + var2;
-    
-    })(3, 2)
-    console.log(sumDue);
+  })('Juan', 'Ymedio')
+  console.log(sumDue);
    
+//2.1
+ const useMe= (a)=>{
+ const result= {
+  value: a + 100,
+ }
+ console.log(result.value);
+ return result;
+ }
 
- /* ((a)=>{
- const result= a + 100;
- console.l og(result)
-  })(10);*/
- //2.1
-let showName =(name)=>{
-        console.log(name);
-    }
-  console.log(showName('Juan'));  
+ 
+useMe(10);
 
-  //2.2
+  //2.2 
   class Persona {
     constructor (nom) {
       this.nom = nom;
@@ -30,23 +30,46 @@ let showName =(name)=>{
    
   
 
-  //3  esta mal 
-  class Rectangulo {
-  constructor (alto, ancho) {
-    this.alto = alto;
-    this.ancho = ancho;
-  }
+  //3
 
-  // Getter
-  get area() {
-     return this.calcArea();
-   }
-  // Método
-  calcArea () {
-    return this.alto * this.ancho;
-  }
+  function Employee()
+{
+this.empName="empName";
+if(this.constructor === Employee){
+throw new Error("You cannot create an instance of Abstract Class");
 }
-const cuadrado = new Rectangulo(10, 10);
-console.log(cuadrado);
+};
+Employee.prototype.display= function(){
+return "El nom del trebajador es: "+this.empName;
+}
+function ManagerFunc(fullName){
+this.empName=fullName;
+}
+ManagerFunc.prototype=Object.create(Employee.prototype);
+var mang=new ManagerFunc("David Flaquer");
+console.log(mang.display());
 
-// miraar clases javascript abstractas
+class EmployeeWithEs6
+{
+constructor() {
+if(this.constructor == EmployeeWithEs6){
+throw new Error(" Object of Abstract Class cannot be created");
+}
+}
+display(){
+throw new Error("Abstract Method has no implementation");
+}
+}
+class Manager extends EmployeeWithEs6
+{
+display(){
+//super.display();
+console.log("I am a Manager");
+}
+}
+var emp = new EmployeeWithEs6;
+var mang=new Manager();
+mang.display();
+  
+
+
