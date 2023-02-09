@@ -2,7 +2,7 @@
 const UnaUOtra = (num)=>
     new Promise( (resolve, reject) => {
             if (num >= 3) {
-              resolve(console.log('Todo ok con el numero'));
+              resolve(console.log('Todo ok con el numero '+ num));
             } else {
               reject(console.log("algo wrong con el numero"))
             }
@@ -55,7 +55,7 @@ const doTask = (iterations, callback) => {
     value: numbers
   });
 }
-doTask(10, function(err, result) {
+doTask(3, function(err, result) {
   if (err) {
     console.error("Se ha sacado un ", err.message);
     return;
@@ -93,7 +93,7 @@ doTask(10, function(err, result) {
         if (employee) {
           resolve({
             error: false,
-            value:employee.name
+            value:employee
           });
         } 
         reject({
@@ -104,20 +104,20 @@ doTask(10, function(err, result) {
   }
 
   getEmployee(1)
-  .then((res)=>console.log(res.value))
-  .catch((err)=>console.log(err))
+  .then((res)=>console.log(res.value.name))
+  .catch((err)=>console.log(err.message))
   getEmployee(5)
-  .then((res)=>console.log(res))
-  .catch((error)=>console.log(error.message))
+  .then((res)=>console.log(res.value.name))
+  .catch((err)=>console.log(err.message))
   
-  //2.2
+  
   const getSalary= (id) =>{
     return new Promise((resolve,reject)=>{
        var salOne = salaries.find(sal => sal.id === id);
        if (salOne) {
         resolve({
           error:false,
-          value:salOne.salary
+          value:salOne
         });
        } else {
         reject({
@@ -128,39 +128,44 @@ doTask(10, function(err, result) {
     })
    }
     getSalary(2)
-    .then((res)=>console.log(res.value))
-    .catch((err)=>console.log(err.message))
-
-    getSalary(5)
     .then((res)=>console.log(res.value.salary))
     .catch((err)=>console.log(err.message))
 
-    
- //2.3 
+    getSalary(5)
+    .then((res)=>console.log(res.value))
+    .catch((err)=>console.log(err.message))
 
-  
-function employeeSal(id) {
-  getEmployee(id)
-    .then((res)=>console.log(res.value)),
-    getSalary(id)
-    .then((res2)=>console.log(res2.value))
-}
+ getEmployee(3)
+    .then((res) => console.log(res.value.name))
+    .catch((err) => console.log(err.message))
+
+   const getAmbes = ()=> getEmployee(1)
+     .then((res) => {
+      console.log( `El trabajador ${res.value.name},su id es: ${res.value.id}`,);
+      getSalary(res.value.id)
+      .then((sal)=>{console.log(`Su salario es ${sal.value.salary}`)})
+      return res.value.id;
+    });
+    getAmbes();
    
-employeeSal(3)
+    let promise1 = new Promise((resolve, reject) => {
+      resolve("Hello! ");
+  });
 
-//3 
-function employeeSalErr(id) {
-  getEmployee(id)
-  .then((res)=>console.log(res.value))
-  .catch((err)=>console.log(err.message))
-  getSalary(id)
-  .then((res2)=>console.log(res2.value))
-  .catch((err)=>console.log(err.message))
-}
-employeeSalErr(4)
+  let promise2 = new Promise((resolve, reject) => {
+      setTimeout(() => {
+          resolve("GeeksforGeeks");
+      }, 1000);
+  });
 
-
-
-
-//https://www.sitepoint.com/flow-control-callbacks-promises-async-await/
-//https://compile7.org/decompile/callback-vs-promises-vs-async-await/
+  let promiseExecution = async () => {
+      for (let promise of [promise1, promise2]) {
+          try {
+              const message = await promise;
+              console.log(message);
+          } catch (error) {
+              console.log(error.message);
+          }
+      }
+  };
+  promiseExecution();

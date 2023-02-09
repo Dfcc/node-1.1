@@ -1,43 +1,31 @@
+//1.1
 //escribir, leer, comprimir
-
 var fs = require("fs");
 console.log(" Writing into an file ");
-
-// Sample.txt is an empty file
-fs.writeFile(
-"sample.txt",
-"Let's write a few sentences in the file",
-function (err) {
+const write = (name,text)=>{
+ fs.writeFile(`${name}.txt`,text, function (err) {
 	if (err) {
 	return console.error(err);
 	}
-
-	// If no error the remaining code executes
-	console.log(" Finished writing ");
-	console.log("Reading the data that's written");
-
-	// Reading the file
-	fs.readFile("sample.txt", function (err, data) {
+ console.log(" Finished writing ");
+});
+}
+//1.2
+const read = ()=>{
+ fs.readFile("sample.txt", function (err, data) {
 	if (err) {
 		return console.error(err);
 	}
+	console.log("Reading the data that's written");
 	console.log("Data read : " + data.toString());
-		
 	});
 }
-);
-
-/* var fs2 = require("fs");
+//1.3
 const zlib = require("zlib");
-  
-// gzip() function accepts a filename 
-// to be compressed and a callback function
 function gzip(filename, callback) {
-    // Create the streams
-    let source = fs2.createReadStream(filename);
-    let destination = fs2.createWriteStream(filename + ".gz");
+    let source = fs.createReadStream(filename);
+    let destination = fs.createWriteStream(filename + ".gz");
     let gzipper = zlib.createGzip();
-      
     // Set up the pipeline
     source
         .on("error", callback)
@@ -46,21 +34,31 @@ function gzip(filename, callback) {
         .on("error", callback)
         .on("finish", callback);
 }
-  
-gzip("./index.txt", (msg) => {
+
+write("sample","hellouuu text");
+read();
+gzip("./sample.txt", (msg) => {
     console.log(msg);
-});
-- Exercici 1
-Crea una funció que imprimeixi recursivament un missatge per la consola amb demores d'un segon.
+}); 
+ 
+//2.1
+var i = 1;  
 
+function myLoop(nom) {         
+  setTimeout(function() {  
+    console.log('hello ' + nom);   
+    i++;                   
+    if (i < 10) {          
+      myLoop(nom);            
+    }                     
+  }, 1000)
+}
 
-- Exercici 2
-Crea una funció que llisti per la consola el contingut del directori d'usuari/ària de l'ordinador utilizant Node Child Processes. 
-const myFunction =()=> console.log("hi there");
-setTimeout(myFunction, 1000);
-
+myLoop("Juan");  
+ 
+//2.2
 const { spawn } = require('child_process');
-const child = spawn('dir', ['D:\2023 tech-learn'], {shell: true});
+const child = spawn('dir', ['D:'], {shell: true});
 child.stdout.on('data', (data) => {
   console.log(`stdout: ${data}`);
 });
@@ -72,65 +70,64 @@ child.stderr.on('data', (data) => {
 child.on('close', (code) => {
   console.log(`child process exited with code ${code}`);
 });
-//3
-//https://www.tutorialspoint.com/node-js-base64-encoding-and-decoding
-//https://gist.github.com/sid24rane/bdf557cf9f835181a994439da0b5b82a
 
-var buffer = require('buffer');
-var path = require('path');
-
-function encode_base64(filename){
-	fs.readFile(path.join(__dirname,'/1er_sprint/',filename),function(error,data){
-	  if(error){
-		throw error;
-	  }else{
-		var buf = Buffer.from(data);
-		var base64 = buf.toString('base64');
-		//console.log('Base64 of ddr.jpg :' + base64);
-		return base64;
-	  }
-	});
-  }
+//3.1
+let filePath ="/sample.txt"
+const encoded64 = Buffer.from(filePath, 'utf8').toString('base64');
+const encodedHex = Buffer.from(filePath, 'utf8').toString('hex');
+console.log(encoded64)
+console.log(encodedHex)
 
 
 
-// create a buffer
-const buff = Buffer.from(strB, 'utf-8');
+let data = encoded64;
+write("sample64",data)
+data = encodedHex;
+write("sampleHex",data)
 
-// decode buffer as Base64
-const base64 = buff.toString('base64');
 
-// print Base64 string
-console.log(base64);
+const crypto = require("crypto");
 
-// Base64 encoded string
-const base64B= base64;
+const algorithm = "aes-256-cbc"; 
 
-// create a buffer
-const buffB = Buffer.from(base64B, 'base64');
+const initVector = crypto.randomBytes(16);
 
-// decode buffer as UTF-8
-const strB = buff.toString('utf-8');
+// protected data
+const message =encoded64;
 
-// print normal string
-console.log(strB);
+// secret key generate 32 bytes of random data
+const Securitykey = crypto.randomBytes(32);
 
-// Convert file to base64 string
-const fileToBase64 = (filename, filepath) => {
-	return new Promise(resolve => {
-	  var file = new File([filename], filepath);
-	  var reader = new FileReader();
-	  // Read file content on file loaded event
-	  reader.onload = function(event) {
-		resolve(event.target.result);
-	  };
-	  
-	  // Convert data to base64 
-	  reader.readAsDataURL(file);
-	});
-  };
-  // Example call:
-  fileToBase64("sample.txt", "./sample.txt").then(result => {
-	console.log(result);
-  });
-  */
+// the cipher function
+const cipher = crypto.createCipheriv(algorithm, Securitykey, initVector);
+
+// encrypt the message
+// input encoding
+// output encoding
+let encryptedData = cipher.update(message, "utf-8", "hex","base64");
+
+encryptedData += cipher.final("hex");
+
+console.log("Encrypted message: " + encryptedData);
+
+const decipher = crypto.createDecipheriv(algorithm, Securitykey, initVector);
+
+let decryptedData = decipher.update(encryptedData, "hex", "utf-8","base64");
+
+decryptedData += decipher.final("utf8");
+
+console.log("Decrypted message: " + decryptedData);
+
+//Borrar
+ const path = './sample64.txt'
+try {
+  fs.unlinkSync(path)
+  //file removed
+} catch(err) {
+  console.error(err)
+}  
+//Inclou un README amb instruccions per a l'execució de cada part.
+//3.2 criptear https://www.section.io/engineering-education/data-encryption-and-decryption-in-node-js-using-crypto/
+//https://lollyrock.com/posts/nodejs-encryption/
+//https://codeforgeek.com/encrypt-and-decrypt-data-in-node-js/
+//https://stackoverflow.com/questions/52165333/deprecationwarning-buffer-is-deprecated-due-to-security-and-usability-issues

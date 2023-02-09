@@ -20,6 +20,8 @@ let salaries = [{
     salary: 2000
 }];
 
+//1.1
+
 const getEmployee =  (id)=>{
     var employee = employees.find(em=> em.id === id);
       if (employee) {
@@ -37,7 +39,7 @@ const getSalary= (id) =>{
      console.log(salOne.salary)
      return salOne
     } else {
-    console.log('no tenemos em')
+    console.log('no tenemos salary con este id')
     }
 }
 const asy =  async (id) =>{
@@ -45,86 +47,71 @@ const asy =  async (id) =>{
  await getSalary(id);
 }
 
-asy(3);
+asy(1);
 
 
-//- Exercici 2 Crea una nova funció asíncrona que cridi a una altra que retorni una Promise que efectuï la seva funció resolve() després de 2 segons de la seva invocació.
-const getEmp = (id)=>{
-    return new Promise( (resolve, reject) => {
-      var employee = employees.find(em=> em.id === id);
-      if (employee) {
-        resolve('Todo ha ido bien');
-        console.log(employee.name)
-      } else {
-        reject('Algo ha fallado')
-        console.log('no tenemos employe con ese id')
-      }
-   })
-}
-const asyDos = async (id)=>{
-    setTimeout(async () => {
-        console.log('Async Code: Wait till feeds completes');
-        await getEmp(id)
-      }, 2000)
-    };
+//1.2
+const getEmployeeProm =  (id)=>{
+  return new Promise( (resolve, reject) => {
+    var employee = employees.find(em=> em.id === id);  
+    if (employee) {
+    setTimeout( () => {
+      console.log('Async Code: Wait till feeds completes');
+      resolve({
+        error: false,
+        value:employee.name,
+      }) 
+      console.log(employee.name);
+     }, 2000)
+    }
+  })
+  }
+const asyDos = async (id)=>{ await getEmployeeProm(id)  };
   
-    
 asyDos(2)
 
-//2 Crea una funció que retorni el doble del número que li passa com a paràmetre després de 2 segons. Crea una altra funció que rebi tres números i calculi la suma dels seus dobles fent servir la funció anterior.
+//2.1
 
+const double= async (a)=>{
+  const total = await a*2;
+ setTimeout( () => { 
+     console.log(total);
+ }, 2000)
+ 
+  return total;
+}
+double(2);
+
+//2.2
 const doubleDeTres= (a,b,c)=>{
-  const total = a*2+b*2+c*2;
-  console.log(total);
-  return total;
+  let total =a + b + c;
+  double(total);
+ return total;
 }
-doubleDeTres(2,2,2);
-const asyncDouble = async(id)=>{
-   const dos= setTimeout(async () => {
-        console.log('Async X  2 ');
-        await double(id)
-      }, 2000)
-}
-const asyncDoubleDeTres = ()=>{
-        const dosDTres= (a,b,c) => {
-             console.log('Async X  3 ');
-             doubleDeTres(a,b,c)
-           }
-    
-};
-function calculate(operation, initialValue, numbers) {
-  let total = initialValue;
-  for (const number of numbers) {
-    total = operation(total, number);
+doubleDeTres(3,3,-3)
+
+
+//3.1
+const checkIf =  async (a,b,c)=>{
+  try {
+    let result2=  ()=>{
+      const total2 = doubleDeTres(a,b,c);
+   console.log(total2);
+  };
+  let result1 = async ()=>{
+    const total1= await double(a);
+   console.log(total1);
   }
-  console.log(total);
-  return total;
+  result1();
+  result2();
+ result2 === result1? console.log("es igual") : console.log("no es igual");
+ /*  console.log (result2());
+  console.log( result1());
+  no me sale esta ternaria */
+
+  } 
+  catch (error) {
+    console.log(error);
+  }
 }
-const double = (num) =>{
-  const porDos=num * 2
-  console.log(porDos)
-  return porDos;
-}
-function multiply(n1, n2) {
-  return n1 * n2;
-}
-calculate(double, 0, [1, 2, 4]);      // => 7
- // => 8
-
- const numbers = [1, 2, 4];
-const doubles = numbers.map(function mapper(number) {
-  return number+number+number;
-});
-doubles; // [2, 4, 8]
-let sum = (a, b,c, double) => {
-  var total = a*double + b*double + c*double;
-  console.log(total);
-  return total;
-} 
-sum(3,5,2);
-
-asyncDouble(4)
-//Crea una altra funció que rebi tres números i calculi la suma dels seus dobles fent servir la funció anterior.
-
-//https://www.google.com/search?q=math+operations+in+javascript&oq=math+operations+in+javascript&aqs=chrome..69i57j0i10i15i22i30i625j0i22i30l8.12927j0j15&sourceid=chrome&ie=UTF-8
-
+checkIf(3,0,0)
