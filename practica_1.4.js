@@ -22,53 +22,61 @@ let salaries = [{
 
 //1.1
 
-const getEmployee =  (id)=>{
-    var employee = employees.find(em=> em.id === id);
-      if (employee) {
-      console.log(employee.name)
-      return employee
-      } else {
-      console.log('no tenemos employe con ese id')
-      }
-  
-}
 
+ const getEmployee = (id)=>{
+  return new Promise( (resolve, reject) => {
+    var employee = employees.find(em=> em.id === id);
+    if (employee) {
+      setTimeout( () => {
+        console.log('Async Code: Esperando a encontrar el employee con el id: ' + id);
+        resolve({
+          error: false,
+          value:employee,
+        }) 
+      }, 2000)
+    } 
+    setTimeout( () => {
+    reject({
+      error: true,
+      message: "No hay ningun employee con este " +  id
+    });
+  }, 2000)
+ })
+}
 const getSalary= (id) =>{
+  return new Promise( (resolve, reject) => {
   var salOne = salaries.find(sal => sal.id === id);
      if (salOne) {
-     console.log(salOne.salary)
-     return salOne
-    } else {
-    console.log('no tenemos salary con este id')
-    }
-}
+      setTimeout( () => {
+        console.log('Async Code: Esperando encontrar el salario del ' + id);
+        resolve({
+          error: false,
+          value:salOne,
+        }) 
+        }, 1000)
+    } 
+    setTimeout( () => {
+    reject({
+      error: true,
+      message: "No hay ningun salario con este " +  id
+    });
+  }, 1000)
+  })
+ }
+
+   
 const asy =  async (id) =>{
- await getEmployee(id);
- await getSalary(id);
+  try {
+   const employe = await getEmployee(id);
+   console.log(employe.value.name); 
+  const salary = await getSalary(employe.value.id);
+   console.log(salary.value.salary)
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 asy(1);
-
-
-//1.2
-const getEmployeeProm =  (id)=>{
-  return new Promise( (resolve, reject) => {
-    var employee = employees.find(em=> em.id === id);  
-    if (employee) {
-    setTimeout( () => {
-      console.log('Async Code: Wait till feeds completes');
-      resolve({
-        error: false,
-        value:employee.name,
-      }) 
-      console.log(employee.name);
-     }, 2000)
-    }
-  })
-  }
-const asyDos = async (id)=>{ await getEmployeeProm(id)  };
-  
-asyDos(2)
 
 //2.1
 
@@ -77,8 +85,7 @@ const double= async (a)=>{
  setTimeout( () => { 
      console.log(total);
  }, 2000)
- 
-  return total;
+ return total;
 }
 double(2);
 
@@ -90,20 +97,19 @@ const doubleDeTres= (a,b,c)=>{
 }
 doubleDeTres(3,3,-3)
 
-
 //3.1
 const checkIf =  async (a,b,c)=>{
   try {
-    let result2=  ()=>{
-      const total2 = doubleDeTres(a,b,c);
-   console.log(total2);
-  };
-  let result1 = async ()=>{
+    let result2= async ()=>{
+     const total2 = await doubleDeTres(a,b,c);
+     console.log(total2);
+    };
+    let result1 = async ()=>{
     const total1= await double(a);
    console.log(total1);
   }
-  result1();
-  result2();
+  await result1();
+  await result2();
  result2 === result1? console.log("es igual") : console.log("no es igual");
  /*  console.log (result2());
   console.log( result1());
@@ -114,4 +120,4 @@ const checkIf =  async (a,b,c)=>{
     console.log(error);
   }
 }
-checkIf(3,0,0)
+checkIf(3,3,10)

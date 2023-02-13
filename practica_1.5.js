@@ -11,15 +11,133 @@ const write = (name,text)=>{
 });
 }
 //1.2
-const read = ()=>{
- fs.readFile("sample.txt", function (err, data) {
+// read value from callback fs read
+/* 
+make sure to use await only when necessary (to unwrap promises into their values).
+
+var pathToText ="./sample.txt";
+var buffer = fs.readFileSync(pathToText);
+var output="";
+ const fileText=()=>(buffer, function(err, chunks){
+  if (err){
+      console.log(err);
+      return;
+    }
+    output = chunks;
+    getData(); // chunks content
+
+});
+
+function getData() {
+  console.log(`this is the getdata ${output}`);
+}
+fileText()
+ */
+const getInput=  async ()=> {
+    return  await new Promise((resolve, reject) => {
+        let input = [];
+        fs.readFile('text1.txt',(err,data)=>{
+            if(err) return reject(err);
+            var input = data.toString().split(' ');
+            return resolve(input);
+        })
+    });
+}
+
+const fsBase = require('fs');
+const fs2 = fsBase.promises
+
+const fn = async () => {
+    const data = await fs2.readFile('text3.txt', 'utf8');
+    console.log(data);
+};
+
+fn();
+
+fs.readFile('./text1.txt', function read(err, data) {
+  if (err) {
+      throw err;
+  }
+  const content = data.toString();
+
+  // Invoke the next step here however you like
+  console.log(content);   // Put all of the code here (not the best solution)
+  processFile(content);   // Or put the next step in a function and invoke it
+});
+
+function processFile(content) {
+  console.log(content);
+}
+// First I want to read the file
+fs.readFile('./sample.txt', function read(err, data) {
+  if (err) {
+      throw err;
+  }
+  const content =data.toString();
+
+  // Invoke the next step here however you like
+  console.log(content);   // Put all of the code here (not the best solution)
+  processFile(content);   // Or put the next step in a function and invoke it
+});
+
+function processFile(content) {
+  console.log(content);
+}
+// First I want to read the file
+fs.readFile('./text2.txt', function read(err, data) {
+  if (err) {
+      throw err;
+  }
+  const content = data;
+
+  // Invoke the next step here however you like
+  console.log(content.toString());   // Put all of the code here (not the best solution)
+  processFile(content.toString());   // Or put the next step in a function and invoke it
+});
+
+function processFile(content) {
+  console.log(content);
+}
+ 
+ const readFile= async(file) =>{
+  const promise = await new Promise((resolve, reject) => {
+    fs.readFile(file, (err, data) => {
+      if (err) reject(err);
+      else resolve(data.toString());
+    });
+  });
+  return promise;
+}
+async function readFile2(file) {
+  const promise = await new Promise((resolve, reject) => {
+    fs.readFile(file, (err, data) => {
+      if (err) reject(err);
+      else resolve(data.toString());
+    });
+  });
+  return promise;
+}
+readFile2("./text3.txt").then(res=>console.log(res));
+readFile("./text4.txt").then(res=>console.log(res));
+
+
+let fileTextThis;
+const read = (file)=>{
+ fs.readFile(`${file}.txt`, function (err, data) {
 	if (err) {
 		return console.error(err);
 	}
 	console.log("Reading the data that's written");
 	console.log("Data read : " + data.toString());
+  console.log(data.toString())
+  fileTextThis=data.toString() ;
+  console.log(fileTextThis)
+  return fileTextThis;
 	});
+
 }
+const textRead = (read("sample"));
+console.log(textRead)
 //1.3
 const zlib = require("zlib");
 function gzip(filename, callback) {
@@ -36,7 +154,7 @@ function gzip(filename, callback) {
 }
 
 write("sample","hellouuu text");
-read();
+read("sample");
 gzip("./sample.txt", (msg) => {
     console.log(msg);
 }); 
@@ -73,50 +191,43 @@ child.on('close', (code) => {
 
 //3.1
 let filePath ="/sample.txt"
+const getOrigin =read("sample");
+console.log(getOrigin)
 const encoded64 = Buffer.from(filePath, 'utf8').toString('base64');
 const encodedHex = Buffer.from(filePath, 'utf8').toString('hex');
+console.log(getOrigin)
 console.log(encoded64)
 console.log(encodedHex)
-
-
 
 let data = encoded64;
 write("sample64",data)
 data = encodedHex;
 write("sampleHex",data)
+data = getOrigin;
 
-
+const cripDcrip = (data)=>{
 const crypto = require("crypto");
-
 const algorithm = "aes-256-cbc"; 
-
 const initVector = crypto.randomBytes(16);
-
-// protected data
-const message =encoded64;
-
-// secret key generate 32 bytes of random data
+const message = data;
 const Securitykey = crypto.randomBytes(32);
-
-// the cipher function
 const cipher = crypto.createCipheriv(algorithm, Securitykey, initVector);
 
-// encrypt the message
-// input encoding
-// output encoding
 let encryptedData = cipher.update(message, "utf-8", "hex","base64");
-
 encryptedData += cipher.final("hex");
-
 console.log("Encrypted message: " + encryptedData);
 
 const decipher = crypto.createDecipheriv(algorithm, Securitykey, initVector);
-
 let decryptedData = decipher.update(encryptedData, "hex", "utf-8","base64");
-
 decryptedData += decipher.final("utf8");
 
 console.log("Decrypted message: " + decryptedData);
+}
+
+
+//write("sample_encrypted", encryptedData);
+
+
 
 //Borrar
  const path = './sample64.txt'

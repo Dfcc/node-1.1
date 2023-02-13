@@ -4,7 +4,7 @@ const UnaUOtra = (num)=>
             if (num >= 3) {
               resolve(console.log('Todo ok con el numero '+ num));
             } else {
-              reject(console.log("algo wrong con el numero"))
+              reject(console.log("algo wrong con el numero "+ num))
             }
          })
     UnaUOtra(3)
@@ -132,21 +132,21 @@ doTask(3, function(err, result) {
     .catch((err)=>console.log(err.message))
 
     getSalary(5)
-    .then((res)=>console.log(res.value))
+    .then((res)=>console.log(res.value.salary))
     .catch((err)=>console.log(err.message))
 
  getEmployee(3)
     .then((res) => console.log(res.value.name))
     .catch((err) => console.log(err.message))
 
-   const getAmbes = ()=> getEmployee(1)
+   const getAmbes = (n)=> getEmployee(n)
      .then((res) => {
       console.log( `El trabajador ${res.value.name},su id es: ${res.value.id}`,);
       getSalary(res.value.id)
       .then((sal)=>{console.log(`Su salario es ${sal.value.salary}`)})
       return res.value.id;
     });
-    getAmbes();
+    getAmbes(3);
    
     let promise1 = new Promise((resolve, reject) => {
       resolve("Hello! ");
