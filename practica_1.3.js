@@ -1,13 +1,15 @@
 //1.1
-const UnaUOtra = (num)=>
-    new Promise( (resolve, reject) => {
+const UnaUOtra = (num)=>{
+    return new Promise( (resolve, reject) => {
             if (num >= 3) {
-              resolve(console.log('Todo ok con el numero '+ num));
+              resolve('Todo ok con el numero');
             } else {
               reject(console.log("algo wrong con el numero "+ num))
             }
          })
-    UnaUOtra(3)
+        }
+        module.exports = UnaUOtra;
+ UnaUOtra(3)
       .then((res)=>{
         console.log(res)
       })

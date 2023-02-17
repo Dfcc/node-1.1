@@ -1,8 +1,17 @@
+const fs = require("fs");
+const fs2 = fs.promises;
+const { readdir } = require('fs/promises');
+const zlib = require("zlib");
+const { spawn } = require('child_process');
+const crypto = require("crypto");
+const algorithm = "aes-256-cbc"; 
+const initVector = crypto.randomBytes(16);
+const Securitykey = crypto.randomBytes(32);
+const password = 'RJ23edrf';
+
+
 //1.1
-//escribir, leer, comprimir
-var fs = require("fs");
-console.log(" Writing into an file ");
-const write = (name,text)=>{
+const writeFile = (name,text)=>{
  fs.writeFile(`${name}.txt`,text, function (err) {
 	if (err) {
 	return console.error(err);
@@ -10,141 +19,36 @@ const write = (name,text)=>{
  console.log(" Finished writing ");
 });
 }
-//1.2
-// read value from callback fs read
-/* 
-make sure to use await only when necessary (to unwrap promises into their values).
+writeFile("sample_renew", "Este es el renew del 1.5")
 
-var pathToText ="./sample.txt";
-var buffer = fs.readFileSync(pathToText);
-var output="";
- const fileText=()=>(buffer, function(err, chunks){
-  if (err){
-      console.log(err);
-      return;
-    }
-    output = chunks;
-    getData(); // chunks content
-
-});
-
-function getData() {
-  console.log(`this is the getdata ${output}`);
-}
-fileText()
- */
-const getInput=  async ()=> {
-    return  await new Promise((resolve, reject) => {
-        let input = [];
-        fs.readFile('text1.txt',(err,data)=>{
-            if(err) return reject(err);
-            var input = data.toString().split(' ');
-            return resolve(input);
-        })
-    });
-}
-
-const fsBase = require('fs');
-const fs2 = fsBase.promises
-
-const fn = async () => {
-    const data = await fs2.readFile('text3.txt', 'utf8');
-    console.log(data);
+//1.2-A
+const readFileA = async (file)=>{
+   const promise = await new Promise((resolve, reject) => {
+          fs.readFile(`${file}.txt`, (err, data) => {
+            if (err) reject(err);
+            else resolve(console.log(`linea 23 de data${data.toString()}`));
+          });
+        });
+        return promise;
+   }
+   //1.2-B
+const fn = async (name) => {
+    const data = await fs2.readFile(name, 'utf8');
+    console.log(`linea 37 del 1.2-B ${data}`);
+    return data;
 };
-
-fn();
-
-fs.readFile('./text1.txt', function read(err, data) {
-  if (err) {
-      throw err;
-  }
-  const content = data.toString();
-
-  // Invoke the next step here however you like
-  console.log(content);   // Put all of the code here (not the best solution)
-  processFile(content);   // Or put the next step in a function and invoke it
-});
-
-function processFile(content) {
-  console.log(content);
-}
-// First I want to read the file
-fs.readFile('./sample.txt', function read(err, data) {
-  if (err) {
-      throw err;
-  }
-  const content =data.toString();
-
-  // Invoke the next step here however you like
-  console.log(content);   // Put all of the code here (not the best solution)
-  processFile(content);   // Or put the next step in a function and invoke it
-});
-
-function processFile(content) {
-  console.log(content);
-}
-// First I want to read the file
-fs.readFile('./text2.txt', function read(err, data) {
-  if (err) {
-      throw err;
-  }
-  const content = data;
-
-  // Invoke the next step here however you like
-  console.log(content.toString());   // Put all of the code here (not the best solution)
-  processFile(content.toString());   // Or put the next step in a function and invoke it
-});
-
-function processFile(content) {
-  console.log(content);
-}
- 
- const readFile= async(file) =>{
-  const promise = await new Promise((resolve, reject) => {
-    fs.readFile(file, (err, data) => {
-      if (err) reject(err);
-      else resolve(data.toString());
-    });
-  });
-  return promise;
-}
-async function readFile2(file) {
-  const promise = await new Promise((resolve, reject) => {
-    fs.readFile(file, (err, data) => {
-      if (err) reject(err);
-      else resolve(data.toString());
-    });
-  });
-  return promise;
-}
-readFile2("./text3.txt").then(res=>console.log(res));
-readFile("./text4.txt").then(res=>console.log(res));
+readFileA("sample_renew")
+.then(res=>{console.log(res)});
+fn("sample_renew.txt");
 
 
-let fileTextThis;
-const read = (file)=>{
- fs.readFile(`${file}.txt`, function (err, data) {
-	if (err) {
-		return console.error(err);
-	}
-	console.log("Reading the data that's written");
-	console.log("Data read : " + data.toString());
-  console.log(data.toString())
-  fileTextThis=data.toString() ;
-  console.log(fileTextThis)
-  return fileTextThis;
-	});
-
-}
-const textRead = (read("sample"));
-console.log(textRead)
 //1.3
-const zlib = require("zlib");
+
 function gzip(filename, callback) {
     let source = fs.createReadStream(filename);
     let destination = fs.createWriteStream(filename + ".gz");
     let gzipper = zlib.createGzip();
-    // Set up the pipeline
+   
     source
         .on("error", callback)
         .pipe(gzipper)
@@ -152,13 +56,10 @@ function gzip(filename, callback) {
         .on("error", callback)
         .on("finish", callback);
 }
-
-write("sample","hellouuu text");
-read("sample");
-gzip("./sample.txt", (msg) => {
-    console.log(msg);
+gzip("./sample_renew.txt", () => {
+    console.log("Comprim Success");
 }); 
- 
+
 //2.1
 var i = 1;  
 
@@ -175,7 +76,7 @@ function myLoop(nom) {
 myLoop("Juan");  
  
 //2.2
-const { spawn } = require('child_process');
+
 const child = spawn('dir', ['D:'], {shell: true});
 child.stdout.on('data', (data) => {
   console.log(`stdout: ${data}`);
@@ -189,56 +90,104 @@ child.on('close', (code) => {
   console.log(`child process exited with code ${code}`);
 });
 
+
 //3.1
-let filePath ="/sample.txt"
-const getOrigin =read("sample");
-console.log(getOrigin)
-const encoded64 = Buffer.from(filePath, 'utf8').toString('base64');
-const encodedHex = Buffer.from(filePath, 'utf8').toString('hex');
-console.log(getOrigin)
-console.log(encoded64)
-console.log(encodedHex)
 
-let data = encoded64;
-write("sample64",data)
-data = encodedHex;
-write("sampleHex",data)
-data = getOrigin;
 
-const cripDcrip = (data)=>{
-const crypto = require("crypto");
-const algorithm = "aes-256-cbc"; 
-const initVector = crypto.randomBytes(16);
-const message = data;
-const Securitykey = crypto.randomBytes(32);
-const cipher = crypto.createCipheriv(algorithm, Securitykey, initVector);
+const getAndCode = async (callback,callback2,callback3, callback4) =>{
+  const getOrigin = () => { 
+  const data =  fn("sample_renew.txt")
+  .then((res)=>{ 
+    console.log(`line 60 ${res}`);
+    return res
+  });
+} 
+ //return data;
+ 
+  
+  const filePath ="sample_renew.txt"
+ 
+  //decoding
+  const utf8 =  Buffer.from(filePath, 'utf8').toString('utf8');
+ const encoded64 =  Buffer.from(filePath, 'utf8').toString('base64');
+  const encodedHex = Buffer.from(filePath, 'utf8').toString('hex');
+  console.log(utf8);
+  console.log(encoded64);
+  console.log(encodedHex);
+ 
+  //saving file decoding
+  var dir = './dec';
+ if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir);
+    callback("dec/sample_renew_64", encoded64);
+    callback("dec/sample_renew_hex",encodedHex);
+  }
+//cripting decoding files
+ const encrypt = callback2(encoded64);
+ const encrypt2 = callback2(encodedHex);
+ const encrypt3 = callback2(utf8);
 
-let encryptedData = cipher.update(message, "utf-8", "hex","base64");
-encryptedData += cipher.final("hex");
-console.log("Encrypted message: " + encryptedData);
+ //saving crypting files
+ const crypt01 =callback("sample_renew_64_crypt", encrypt);
+ const crypt02 =callback("sample_renew_hex_crypt",encrypt2);
+ const crypt03 =callback("sample_renew_hex_crypt",encrypt3);
+  
+ //deleting files are not crypted
+ setTimeout( () => {
+  callback3("./dec","txt");
+}, 1000)
 
-const decipher = crypto.createDecipheriv(algorithm, Securitykey, initVector);
-let decryptedData = decipher.update(encryptedData, "hex", "utf-8","base64");
-decryptedData += decipher.final("utf8");
+ setTimeout( () => {
+  //callback4(utf8);
+  callback4(encoded64);
+  //callback4(encodedHex);
+}, 2000) 
+  }
 
-console.log("Decrypted message: " + decryptedData);
+
+
+const findByExtensionAndDelete = async (dir, ext) => {
+    const matchedFiles = [];
+    var folder = dir;
+    const files = await readdir(dir);
+   for (const file of files) {
+        // Method 2:
+        if (file.endsWith(`.${ext}`)) {
+            matchedFiles.push(file);  
+          
+    }
+    console.log(matchedFiles);  
+    if (fs.existsSync(folder)){
+      fs.rmdirSync(folder, { recursive: true });
+    
+      console.log('Folder Deleted Successfully.');
+  }
+  
+
+    }
+   
 }
 
 
-//write("sample_encrypted", encryptedData);
 
 
+const encrypt = (text)=>{
+    var cipher = crypto.createCipheriv(algorithm, Securitykey, initVector)
+    var crypted = cipher.update(text,'utf8','hex','base64')
+    crypted += cipher.final('hex');
+    console.log(crypted)
+    return crypted.toString();
+}
 
-//Borrar
- const path = './sample64.txt'
-try {
-  fs.unlinkSync(path)
-  //file removed
-} catch(err) {
-  console.error(err)
-}  
-//Inclou un README amb instruccions per a l'execució de cada part.
-//3.2 criptear https://www.section.io/engineering-education/data-encryption-and-decryption-in-node-js-using-crypto/
-//https://lollyrock.com/posts/nodejs-encryption/
-//https://codeforgeek.com/encrypt-and-decrypt-data-in-node-js/
-//https://stackoverflow.com/questions/52165333/deprecationwarning-buffer-is-deprecated-due-to-security-and-usability-issues
+const decrypt=(text)=>{
+  if (text === null || typeof text === 'undefined' || text === '') {
+    return text
+  }
+   var decipher = crypto.createDecipheriv(algorithm, Securitykey, initVector)
+   var dec = decipher.update(text,'utf8')
+   dec += decipher.final('base64');
+   return dec.toString();
+}
+
+getAndCode(writeFile,encrypt,findByExtensionAndDelete,decrypt);
+  

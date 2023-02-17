@@ -32,18 +32,21 @@ useMe(10);
 
   //3
 
-  function Employee()
-{
-this.empName="empName";
-if(this.constructor === Employee){
-throw new Error("You cannot create an instance of Abstract Class");
-}
+  class Employee {
+  constructor () {
+    this.empName = "empName";
+    if (this.constructor === Employee) {
+      throw new Error("You cannot create an instance of Abstract Class");
+    }
+  }
+  display() {
+    return "El nom del trebajador es: " + this.empName;
+  }
 };
-Employee.prototype.display= function(){
-return "El nom del trebajador es: "+this.empName;
-}
-function ManagerFunc(fullName){
-this.empName=fullName;
+class ManagerFunc {
+  constructor (fullName) {
+    this.empName = fullName;
+  }
 }
 ManagerFunc.prototype=Object.create(Employee.prototype);
 var mang=new ManagerFunc("David Flaquer");
@@ -72,4 +75,4 @@ var mang=new Manager();
 mang.display();
   
 
-
+//https://www.todojs.com/clases-new-target/
