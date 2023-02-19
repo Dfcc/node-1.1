@@ -102,16 +102,15 @@ const getAndCode = async (callback,callback2,callback3, callback4) =>{
     return res
   });
 } 
+getOrigin();
  //return data;
- 
-  
-  const filePath ="sample_renew.txt"
+const filePath ="sample_renew.txt"
  
   //decoding
-  const utf8 =  Buffer.from(filePath, 'utf8').toString('utf8');
+  const utf8 = await fn("sample_renew.txt");
  const encoded64 =  Buffer.from(filePath, 'utf8').toString('base64');
   const encodedHex = Buffer.from(filePath, 'utf8').toString('hex');
-  console.log(utf8);
+  console.log(utf8.toString());
   console.log(encoded64);
   console.log(encodedHex);
  
@@ -119,6 +118,7 @@ const getAndCode = async (callback,callback2,callback3, callback4) =>{
   var dir = './dec';
  if (!fs.existsSync(dir)){
     fs.mkdirSync(dir);
+    callback("dec/sample_renew_utf8_the same", utf8.toString());
     callback("dec/sample_renew_64", encoded64);
     callback("dec/sample_renew_hex",encodedHex);
   }
@@ -128,20 +128,21 @@ const getAndCode = async (callback,callback2,callback3, callback4) =>{
  const encrypt3 = callback2(utf8);
 
  //saving crypting files
- const crypt01 =callback("sample_renew_64_crypt", encrypt);
- const crypt02 =callback("sample_renew_hex_crypt",encrypt2);
- const crypt03 =callback("sample_renew_hex_crypt",encrypt3);
+callback("sample_renew_64_crypt", encrypt);
+ callback("sample_renew_hex_crypt",encrypt2);
+callback("sample_renew_utf8_crypt",encrypt3);
   
  //deleting files are not crypted
- setTimeout( () => {
+/*  setTimeout( () => {
   callback3("./dec","txt");
-}, 1000)
+}, 1000) */
 
- setTimeout( () => {
+/*  setTimeout( () => {
   //callback4(utf8);
-  callback4(encoded64);
-  //callback4(encodedHex);
-}, 2000) 
+  console.log(encrypt3)
+  callback4(encrypt2);
+  //callback4(encodedutf8); crypto decrypt fails
+}, 2000)  */
   }
 
 
@@ -174,7 +175,7 @@ const findByExtensionAndDelete = async (dir, ext) => {
 const encrypt = (text)=>{
     var cipher = crypto.createCipheriv(algorithm, Securitykey, initVector)
     var crypted = cipher.update(text,'utf8','hex','base64')
-    crypted += cipher.final('hex');
+    crypted += cipher.final('hex','utf8','base64');
     console.log(crypted)
     return crypted.toString();
 }
@@ -184,10 +185,11 @@ const decrypt=(text)=>{
     return text
   }
    var decipher = crypto.createDecipheriv(algorithm, Securitykey, initVector)
-   var dec = decipher.update(text,'utf8')
-   dec += decipher.final('base64');
+   var dec = decipher.update(text,'hex','utf8','base64')
+   dec += decipher.final('hex');
+   console.log(dec)
    return dec.toString();
 }
 
-getAndCode(writeFile,encrypt,findByExtensionAndDelete,decrypt);
+getAndCode(writeFile,encrypt);
   
