@@ -97,12 +97,14 @@ doTask(3, function(err, result) {
             error: false,
             value:employee
           });
+          return employee;
         } 
         reject({
           error: true,
           message: "No hay ningun employee con este " +  id
         });
      })
+     
   }
 
   getEmployee(1)

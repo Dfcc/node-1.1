@@ -2,6 +2,22 @@
 function sum(a, b) {
     return a + b;
   }
+  class Greeting {
+    greet(nom) {
+      return `hello ${nom}`
+    }
+  }
+  class Persona {
+   greeting = new Greeting()
+   nom = 'John Doe';
+  getGreeting(){
+      // console.log(this.greeting.greet(this.nom));
+     return this.greeting.greet(this.nom)
+    }
+  }
+
+  
+
   function addAsync(a, b, callback) {
     setTimeout(() => {
       const result = a + b;
@@ -73,11 +89,7 @@ const cappedSum = (a, b) => {
     return `hello ${this.name}`
   }
 } */
-class Greeting {
-  greet(name) {
-    return `hello ${name}`
-  }
-}
+
 class User {
   greeting = new Greeting()
   name = 'john'
@@ -86,19 +98,18 @@ class User {
     return this.greeting.greet(this.name)
   }
 }
-function fetchData() {
+/* function fetchData() {
   return fetch('./data.json').then((postsResponse) => {
     if (postsResponse.ok) {
       return postsResponse.json()
     }
     return Promise.reject()
   })
-}
+} */
 const getRandomNumber = () => Math.random()
 
 const getEmployee = (id)=>{
-  
-  return new Promise( (resolve, reject) => {
+ return new Promise( (resolve, reject) => {
  fs.readFile('data.json', (err, data) => {
     if (err) throw err;
     let employees = JSON.parse(data);
@@ -119,7 +130,17 @@ const getEmployee = (id)=>{
  })
  
 }
+function fetchData() {
+  return fetch('./data.json').then((postsResponse) => {
+    if (postsResponse.ok) {
+      return postsResponse.json()
+    }
+    return Promise.reject()
+  })
+}
 
 
 
-module.exports=({sum, addAsync,timerGame,asyncAdd, countdown,delay,giveMePromise,salut,cappedSum,fetchData,getRandomNumber});
+
+
+module.exports=({sum, addAsync,Persona,Greeting,timerGame,asyncAdd, countdown,delay,giveMePromise,salut,cappedSum,fetchData,getRandomNumber, getEmployee,fetchData});
