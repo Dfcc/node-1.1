@@ -80,15 +80,9 @@ const asyncFunc = () => {
 };
 
 const asyncCall = async () => {
- try {
-   const result = await asyncFunc();
-   console.log(result);
- } catch (error) {
-   console.log('Error, something went wrong.');
- }
-
-};
-
+ const result = await asyncFunc();
+ console.log(result);
+}
 asyncCall();
 
 //2.1 Promises
@@ -109,7 +103,7 @@ const retornDouble = (num) => {
 
 const plus3 = async (n1,n2,n3) => {
   const res = await retornDouble(n1+n2+n3);
-  console.log(`Result line 115 is ${res*2}`);
+  console.log(`Result line 106 is ${res*2}`);
 };
 
 plus3(1, 2, 3);
@@ -119,12 +113,12 @@ plus3(1,2,null);
 //2.1 callbacks 
 const doubleDeTres = (a,b,c,callback)=>{
    let total =a + b + c;
-   console.log("this is 144 "   + total)  
+   console.log("this is 116 "   + total)  
    callback(total);
    return total 
  }
  const cb = (total) => {
-    console.log("line 127_ " + total*2)
+    console.log("line 121 " + total*2)
   }
   setTimeout(doubleDeTres,2000,3,3,3,cb);
 
@@ -141,13 +135,10 @@ const asyError =  async (id) =>{
 }
 asyError(6);
 
-
-
-
 const plusErr = async (n1,n2,n3) => {
   try {
      const res = await retornDouble(n1+n2+n3);
-     console.log(`Result line 115 is ${res*2}`);
+     console.log(`Result line 141 is ${res*2}`);
    } catch (error) {
      console.log('Something went wrong line 143');
    }
