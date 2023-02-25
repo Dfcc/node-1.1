@@ -27,97 +27,129 @@ let salaries = [{
   return new Promise( (resolve, reject) => {
     var employee = employees.find(em=> em.id === id);
     if (employee) {
-      setTimeout( () => {
-        console.log('Async Code: Esperando a encontrar el employee con el id: ' + id);
+       console.log('Async Code: Esperando a encontrar el employee con el id: ' + id);
         resolve({
           error: false,
           value:employee,
         }) 
-      }, 2000)
-    } 
-    setTimeout( () => {
+     } 
+    
     reject({
       error: true,
       message: "No hay ningun employee con este " +  id
     });
-  }, 2000)
  })
 }
 const getSalary= (id) =>{
   return new Promise( (resolve, reject) => {
   var salOne = salaries.find(sal => sal.id === id);
      if (salOne) {
-      setTimeout( () => {
-        console.log('Async Code: Esperando encontrar el salario del ' + id);
+       console.log('Async Code: Esperando encontrar el salario del ' + id);
         resolve({
           error: false,
           value:salOne,
         }) 
-        }, 1000)
-    } 
-    setTimeout( () => {
+   } 
+   
     reject({
       error: true,
       message: "No hay ningun salario con este " +  id
     });
-  }, 1000)
-  })
+    })
  }
 
    
 const asy =  async (id) =>{
-  try {
-   const employe = await getEmployee(id);
-   console.log(employe.value.name); 
+  const employe = await getEmployee(id);
   const salary = await getSalary(employe.value.id);
-   console.log(salary.value.salary)
-  } catch (error) {
-    console.log(error)
-  }
+  console.log(`func asy con promises using async await with the man ${employe.value.name} and the salary ${salary.value.salary}`)
 }
+
 
 asy(1);
 
-//2.1
+//1.2
+const asyncFunc = () => {
+  return new Promise((resolve) => {
+   console.log('request start 1.2');
+   console.log('starts async, Promise pending, ');
+   setTimeout(() => {
+     resolve('async resolve promise in 2 sec');
+   }, 2000);
+ });
+};
 
-const double= async (a)=>{
-  const total = await a*2;
- setTimeout( () => { 
-     console.log(total);
- }, 2000)
- return total;
-}
-double(2);
+const asyncCall = async () => {
+ try {
+   const result = await asyncFunc();
+   console.log(result);
+ } catch (error) {
+   console.log('Error, something went wrong.');
+ }
 
-//2.2
-const doubleDeTres= (a,b,c)=>{
-  let total =a + b + c;
-  double(total);
- return total;
-}
-doubleDeTres(3,3,-3)
+};
+
+asyncCall();
+
+//2.1 Promises
+
+const retornDouble = (num) => {
+ return new Promise((resolve, reject) => {
+    if (!num || typeof num !== 'number') {
+      reject('REJECTED: Error, parameter(s) either missing or not of type number');
+     return;
+    }
+    setTimeout(() => {
+      console.log(2 * num);
+      resolve(2 * num);
+    }, 2000);
+  });
+};
+
+
+const plus3 = async (n1,n2,n3) => {
+  const res = await retornDouble(n1+n2+n3);
+  console.log(`Result line 115 is ${res*2}`);
+};
+
+plus3(1, 2, 3);
+plus3(1,2,null);
+
+
+//2.1 callbacks 
+const doubleDeTres = (a,b,c,callback)=>{
+   let total =a + b + c;
+   console.log("this is 144 "   + total)  
+   callback(total);
+   return total 
+ }
+ const cb = (total) => {
+    console.log("line 127_ " + total*2)
+  }
+  setTimeout(doubleDeTres,2000,3,3,3,cb);
+
 
 //3.1
-const checkIf =  async (a,b,c)=>{
+const asyError =  async (id) =>{
   try {
-    let result2= async ()=>{
-     const total2 = await doubleDeTres(a,b,c);
-     console.log(total2);
-    };
-    let result1 = async ()=>{
-    const total1= await double(a);
-   console.log(total1);
-  }
-  await result1();
-  await result2();
- result2 === result1? console.log("es igual") : console.log("no es igual");
- /*  console.log (result2());
-  console.log( result1());
-  no me sale esta ternaria */
-
-  } 
-  catch (error) {
-    console.log(error);
+   const employe = await getEmployee(id);
+   const salary = await getSalary(employe.value.id);
+   console.log(`func asy con promises using async await with the man ${employe.value.name} and the salary ${salary.value.salary}`)
+  } catch (error) {
+    console.log(error.message)
   }
 }
-checkIf(3,3,10)
+asyError(6);
+
+
+
+
+const plusErr = async (n1,n2,n3) => {
+  try {
+     const res = await retornDouble(n1+n2+n3);
+     console.log(`Result line 115 is ${res*2}`);
+   } catch (error) {
+     console.log('Something went wrong line 143');
+   }
+ };
+ plusErr('b',2,1)

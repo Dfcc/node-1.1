@@ -104,7 +104,6 @@ doTask(3, function(err, result) {
           message: "No hay ningun employee con este " +  id
         });
      })
-     
   }
 
   getEmployee(1)
@@ -114,62 +113,39 @@ doTask(3, function(err, result) {
   .then((res)=>console.log(res.value.name))
   .catch((err)=>console.log(err.message))
   
-  
-  const getSalary= (id) =>{
-    return new Promise((resolve,reject)=>{
-       var salOne = salaries.find(sal => sal.id === id);
-       if (salOne) {
+  //2.2
+  const getSalary = (id)=>{
+    return new Promise( (resolve, reject) => {
+      var salary = salaries.find(sal=> sal.id === id);
+      if (salary) {
         resolve({
-          error:false,
-          value:salOne
+          error: false,
+          value:salary
         });
-       } else {
-        reject({
-          error:true,
-          message:"No hay ningun salario con este " + id
-        })
-      }
-    })
-   }
-    getSalary(2)
-    .then((res)=>console.log(res.value.salary))
-    .catch((err)=>console.log(err.message))
-
-    getSalary(5)
-    .then((res)=>console.log(res.value.salary))
-    .catch((err)=>console.log(err.message))
-
- getEmployee(3)
-    .then((res) => console.log(res.value.name))
-    .catch((err) => console.log(err.message))
-
-   const getAmbes = (n)=> getEmployee(n)
-     .then((res) => {
+        return salary;
+      } 
+      reject({
+        error: true,
+        message: "No hay ningun salary con este " +  id
+      });
+   })
+  }
+//2.3
+  const getAmbes = (n)=>{ 
+      getEmployee(n)
+      .then((res) => {
       console.log( `El trabajador ${res.value.name},su id es: ${res.value.id}`,);
       getSalary(res.value.id)
-      .then((sal)=>{console.log(`Su salario es ${sal.value.salary}`)})
-      return res.value.id;
-    });
-    getAmbes(3);
-   
-    let promise1 = new Promise((resolve, reject) => {
-      resolve("Hello! ");
-  });
+      .then((sal)=>{console.log(`Su salario es ${sal.value.salary}`)
+    })
+     return res.value.id;
+    })
+  }
+   getAmbes(3);
 
-  let promise2 = new Promise((resolve, reject) => {
-      setTimeout(() => {
-          resolve("GeeksforGeeks");
-      }, 1000);
-  });
-
-  let promiseExecution = async () => {
-      for (let promise of [promise1, promise2]) {
-          try {
-              const message = await promise;
-              console.log(message);
-          } catch (error) {
-              console.log(error.message);
-          }
-      }
-  };
-  promiseExecution();
+//3
+    const errorMessage = (n)=>{
+      getSalary(n).catch(err=>console.log(err.message))
+    } 
+    errorMessage(7);   
+       

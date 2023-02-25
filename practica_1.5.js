@@ -94,21 +94,20 @@ child.on('close', (code) => {
 //3.1
 
 
-const getAndCode = async (callback,callback2,callback3, callback4) =>{
-  const getOrigin = () => { 
-  const data =  fn("sample_renew.txt")
-  .then((res)=>{ 
-    console.log(`line 60 ${res}`);
-    return res
-  });
-} 
+const getAndCode = async (callback,callback2,callback4) =>{
+  //get data
+  const getOrigin = async() => { 
+  const data = await fn("sample_renew.txt")
+  console.log(data)
+   return data
+ } 
 getOrigin();
  //return data;
-const filePath ="sample_renew.txt"
+const filePath =getOrigin.toString();
  
   //decoding
-  const utf8 = await fn("sample_renew.txt");
- const encoded64 =  Buffer.from(filePath, 'utf8').toString('base64');
+  const utf8 = await getOrigin();
+  const encoded64 =  Buffer.from(filePath, 'utf8').toString('base64');
   const encodedHex = Buffer.from(filePath, 'utf8').toString('hex');
   console.log(utf8.toString());
   console.log(encoded64);
@@ -136,13 +135,10 @@ callback("sample_renew_utf8_crypt",encrypt3);
 /*  setTimeout( () => {
   callback3("./dec","txt");
 }, 1000) */
-
-/*  setTimeout( () => {
-  //callback4(utf8);
-  console.log(encrypt3)
-  callback4(encrypt2);
-  //callback4(encodedutf8); crypto decrypt fails
-}, 2000)  */
+ //callback4(utf8);
+  console.log(encoded64)
+  callback4(utf8);
+ 
   }
 
 
@@ -186,10 +182,10 @@ const decrypt=(text)=>{
   }
    var decipher = crypto.createDecipheriv(algorithm, Securitykey, initVector)
    var dec = decipher.update(text,'hex','utf8','base64')
-   dec += decipher.final('hex');
+   dec += decipher.final('utf8');
    console.log(dec)
    return dec.toString();
 }
 
-getAndCode(writeFile,encrypt);
+getAndCode(writeFile,encrypt,decrypt);
   
