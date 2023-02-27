@@ -101,7 +101,6 @@ const getAndCode = async (callback,callback2,callback4) =>{
   console.log(data)
    return data
  } 
-getOrigin();
  //return data;
 const filePath =getOrigin.toString();
  
